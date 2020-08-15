@@ -1,0 +1,13 @@
+* [Shimakaze.Struct.Ini](Shimakaze.Struct.Ini/Shimakaze.Struct.Ini.md)
+  * [IniDocument](Shimakaze.Struct.Ini/IniDocument/IniDocument.md)
+  * IniKeyValuePair
+    * [IniKeyValuePair](Shimakaze.Struct.Ini/IniKeyValuePair/IniKeyValuePair.md)
+    * Properties
+      * [Item[]](Shimakaze.Struct.Ini/IniKeyValuePair/Properties/Item[].md)
+      * [NoSectionContent](Shimakaze.Struct.Ini/IniKeyValuePair/Properties/NoSectionContent.md)
+      * [Sections](Shimakaze.Struct.Ini/IniKeyValuePair/Properties/Sections.md)
+    * Methods
+      * [GetFromNoSectionContent](Shimakaze.Struct.Ini/IniKeyValuePair/Methods/GetFromNoSectionContent.md)
+      * [ToString](Shimakaze.Struct.Ini/IniKeyValuePair/Methods/ToString.md)
+  * [IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)
+  * [IniValue](Shimakaze.Struct.Ini/IniValue/IniValue.md)

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Shimakaze Docs</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/vue.css" class="theme" title="vue" disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/buble.css" class="theme" title="buble" disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/dark.css" class="theme" title="dark" disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/pure.css" class="theme" title="pure" disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/dolphin.css" class="theme" title="dolphin"
+    disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css" class="theme"
+    title="themeable-dark" disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-defaults.css" class="theme"
+    title="themeable-defaults" disabled>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css" class="theme"
+    title="themeable-light" disabled>
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+  <script src="/js/script.js"></script>
+</head>
+
+<body>
+  <div data-app id="app">Loading...</div>
+  <script>
+    window.$docsify = {
+      loadNavbar: true,
+      loadSidebar: true,
+      coverpage: false,
+      auto2top: true,
+      maxLevel: 3,
+      name: 'Shimakaze Docs',
+      repo: 'frg2089/Shimakaze.Struct.Ini',
+      plugins: [
+        function (hook, vm) {
+          hook.beforeEach(function (html) {
+            return html
+              + '\n\n----  \n'
+              + '`Shimakaze Docs` Powered by [`docsify`](//docsify.js.org)  \n'
+              + '`JavaScript` Build by [`TypeScript`](//www.typescriptlang.org)  \n'
+              + '----'
+          }),
+            hook.afterEach(function (html) {
+              if (vm.route.path === '/') {
+                return html
+              }
+              return html
+            })
+        }
+      ]
+    }
+
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4.11.4/lib/plugins/search.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4.11.4/lib/plugins/zoom-image.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1.21.0/components/prism-csharp.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+</body>
+
+</html>

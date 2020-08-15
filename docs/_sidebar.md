@@ -1,0 +1,6 @@
+* [Shimakaze.Struct.Ini](/)
+  * [Shimakaze.Struct.Ini.IniDocument](Shimakaze.Struct.Ini/IniDocument/IniDocument.md)
+  * [Shimakaze.Struct.Ini.IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)
+  * [Shimakaze.Struct.Ini.IniKeyValuePair](Shimakaze.Struct.Ini/IniKeyValuePair/IniKeyValuePair.md)
+  * [Shimakaze.Struct.Ini.IniValue](Shimakaze.Struct.Ini/IniValue/IniValue.md)
+  * [Shimakaze.Struct.Ini.Helper.IniDocumentHelper](Shimakaze.Struct.Ini.Helper/IniDocumentHelper/IniDocumentHelper.md)
