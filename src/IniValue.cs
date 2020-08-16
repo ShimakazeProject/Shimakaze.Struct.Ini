@@ -61,7 +61,7 @@ namespace Shimakaze.Struct.Ini
 
         public static implicit operator IniValue(int i) => new IniValue { raw = i.ToString() };
         public static implicit operator IniValue(long i) => new IniValue { raw = i.ToString() };
-        public static implicit operator IniValue(double i) => new IniValue { raw = i.ToString() };
+        public static implicit operator IniValue(double d) => new IniValue { raw = d.ToString() };
         /// <summary>
         /// 为了与<see cref="double"/>转换区分, 这个转换是强制转换
         /// </summary>
