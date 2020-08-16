@@ -1,9 +1,15 @@
-# Shimakaze.Struct.Ini
-Shimakaze Docs是离散的  
-为CNC系列的INI提供简单数据结构  
-可以更加方便的用这个处理ini文件
+# Shimakaze Docs
+<div style="margin:0 -10px 0 0;padding:20px;background-color:rgba(60,60,90,.6);border-radius:10px;">
+<b>注意</b>:  
 
-这个项目拥有以下内容
+`Shimakaze Docs`是分散的文档, 每个项目各一个, 其由[`docsify`](//docsify.js.org/)强力驱动
+</div>
+
+# Shimakaze.Struct.Ini
+这是一个为CNC系列的INI提供简单数据结构的项目  
+使用这个库可以更加方便的处理ini文件
+
+这个库拥有以下内容
 
 ||
 |:-:|-|
