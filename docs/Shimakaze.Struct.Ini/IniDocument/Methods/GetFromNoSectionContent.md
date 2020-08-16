@@ -7,7 +7,7 @@ public IniKeyValuePair GetFromNoSectionContent(string key);
 ```
 
 ### Parameters
-`key` [String](https://docs.microsoft.com/zh-cn/dotnet/api/system.string?view=dotnet-plat-ext-3.1)
+`key` [String](//docs.microsoft.com/zh-cn/dotnet/api/system.string)
 
 ### Returns
 [IniKeyValuePair](Shimakaze.Struct.Ini/IniKeyValuePair/IniKeyValuePair.md)

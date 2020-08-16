@@ -21,7 +21,7 @@ Inheritance [Object](//docs.microsoft.com/dotnet/api/system.object) -> [ValueTyp
 |:-|:-|
 [Equals(object obj)](//docs.microsoft.com/dotnet/api/system.object.equals)|Determines whether the specified object is equal to the current object. <br>(Inherited from Object)
 [GetFromNoSectionContent(string key)](Shimakaze.Struct.Ini/IniDocument/Methods/GetFromNoSectionContent.md)|从NoSectionContent中获取对象
-[GetHashCode()](//docs.microsoft.com/zh-cn/dotnet/api/system.object.gethashcode?view=dotnet-plat-ext-3.1#System_Object_GetHashCode)|Serves as the default hash function. <br>(Inherited from Object)
+[GetHashCode()](//docs.microsoft.com/zh-cn/dotnet/api/system.object.gethashcode#System_Object_GetHashCode)|Serves as the default hash function. <br>(Inherited from Object)
 [ToString()](Shimakaze.Struct.Ini/IniDocument/Methods/ToString.md)|转换为INI字符串对象
 
 # See also

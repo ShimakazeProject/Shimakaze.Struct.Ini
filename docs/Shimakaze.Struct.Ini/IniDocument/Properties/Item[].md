@@ -7,7 +7,7 @@ public Shimakaze.Struct.Ini.IniSection this[string sectionName] { get; }
 ```
 
 ### Parameters
-`sectionName` [String](https://docs.microsoft.com/zh-cn/dotnet/api/system.string?view=dotnet-plat-ext-3.1)
+`sectionName` [String](//docs.microsoft.com/zh-cn/dotnet/api/system.string)
 
 ### Property Value
 [IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)
