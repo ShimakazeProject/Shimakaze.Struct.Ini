@@ -22,46 +22,20 @@
     title="themeable-light" disabled>
 
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
-  <script src="//cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="/js/script.js"></script>
 </head>
 
 <body>
   <div data-app id="app">Loading...</div>
-  <script>
-    window.$docsify = {
-      loadNavbar: true,
-      loadSidebar: true,
-      coverpage: false,
-      auto2top: true,
-      maxLevel: 3,
-      name: 'Shimakaze Docs',
-      repo: 'frg2089/Shimakaze.Struct.Ini',
-      plugins: [
-        function (hook, vm) {
-          hook.beforeEach(function (html) {
-            return html
-              + '\n\n----  \n'
-              + '`Shimakaze Docs` Powered by [`docsify`](//docsify.js.org)  \n'
-              + '`JavaScript` Build by [`TypeScript`](//www.typescriptlang.org)  \n'
-              + '----'
-          }),
-            hook.afterEach(function (html) {
-              if (vm.route.path === '/') {
-                return html
-              }
-              return html
-            })
-        }
-      ]
-    }
-
-  </script>
+  <script src="/js/docsify.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-  <!-- <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script> -->
+  <!-- 
+  <script src="//cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
   <script src="//unpkg.com/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+  -->
+  <script src="/js/script.js"></script>
 </body>
 
 </html>
