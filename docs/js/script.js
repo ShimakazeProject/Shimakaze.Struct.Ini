@@ -5,7 +5,7 @@ var Cookie = /** @class */ (function () {
     }
     // 获取cookie
     Cookie.get = function (key) {
-        var key = key + "=";
+        key = key + "=";
         var cookieArray = document.cookie.split(';');
         for (var i = 0; i < cookieArray.length; i++) {
             var cookie = cookieArray[i].trim();
@@ -30,28 +30,29 @@ var Theme = /** @class */ (function () {
     }
     // 从cookie中读取主题
     Theme.loadThemeFromCookie = function () {
-        var theme = Cookie.get("theme");
-        if (theme != "")
-            Theme.change(theme);
-        else if (theme != "" && theme != null) {
-            Cookie.set("theme", "themeable-dark");
-            Theme.change("themeable-dark");
+        var theme = Cookie.get("theme"); // 获取cookie中主题相关内容
+        if (theme == "" || theme == null) { // 找不到主题设置
+            Cookie.set("theme", "themeable-dark"); // 添加主题到cookie
+            Theme.change("themeable-dark"); // 设置主题
         }
+        else if (theme != "")
+            Theme.change(theme); // 从cookie中设置主题
     };
     // 修改主题
     Theme.change = function (theme) {
-        var links = document.getElementsByTagName("link");
+        var links = document.getElementsByTagName("link"); // 获取全部link标签
         for (var i = 0; i < links.length; i++) {
-            var link = links[i];
-            if (link.className == "theme") {
-                if (link.title == theme)
-                    link.disabled = false;
+            var link = links[i]; // 遍历link标签
+            if (link.className == "theme") { // 是theme类标签
+                if (link.title == theme) // 是目标主题
+                    link.disabled = false; // 解除禁用
                 else
-                    link.disabled = true;
+                    link.disabled = true; // 否则设置禁用
             }
         }
-        Theme.theme = theme;
+        Theme.instance = theme; // 修改当前实例的主题名
     };
     return Theme;
 }());
+// 加载主题
 Theme.loadThemeFromCookie();

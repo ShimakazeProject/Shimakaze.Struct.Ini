@@ -11,4 +11,4 @@
   * <a href="javascript:Theme.change('themeable-dark');" target="_self">themeable-dark</a>
 * Language
   * [中文](/)
-  * [En](/en/)
+  <!-- * [En](/en/) -->
