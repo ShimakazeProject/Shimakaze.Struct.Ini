@@ -6,6 +6,7 @@ window.$docsify = {
     maxLevel: 3,
     name: 'Shimakaze Docs',
     repo: 'frg2089/Shimakaze.Struct.Ini',
+    homepage: "index.md",
     plugins: [
         function (hook, vm) {
             hook.beforeEach(function (html) {
