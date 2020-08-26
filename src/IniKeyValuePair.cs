@@ -35,40 +35,42 @@ namespace Shimakaze.Struct.Ini
         /// </summary>
         public static IniKeyValuePair Parse(string s)
         {
-            int? summarySeparatorIndex = null;
-            int? keyValueSeparatorIndex = null;
-            IniKeyValuePair keyValuePair = new IniKeyValuePair();
-            // 是否有注释
-            if (s.Contains(";"))
-                // 有就设置分隔符索引
-                summarySeparatorIndex = s.IndexOf(';');
+            var summaryTuple = getSummary(s);
+            var dataTuple = getValue(summaryTuple.data);
 
-            // 有没有键值对
-            if (s.Contains("="))
+            return new IniKeyValuePair
             {
-                // 获取键值对等号位置
-                var tmp = s.IndexOf('=');
-                // 检查等号是否是注释内容
-                if (tmp < summarySeparatorIndex)
-                    // 不是注释内容 设置等号索引位置
-                    keyValueSeparatorIndex = tmp;
-            }
-            // 有注释写注释
-            if (summarySeparatorIndex.HasValue) keyValuePair.Summary = s.Substring(summarySeparatorIndex.Value + 1).Trim();
-            // 有数据写数据
-            if (keyValueSeparatorIndex.HasValue)
+                Key = dataTuple.key,
+                Value = dataTuple.value,
+                Summary = summaryTuple.summary
+            };
+
+            (string data, string summary) getSummary(string s)
             {
-                keyValuePair.Key = s.Substring(0, keyValueSeparatorIndex.Value).Trim();
-                keyValuePair.Value = s.Substring(
-                    keyValueSeparatorIndex.Value + 1,
-                    summarySeparatorIndex.HasValue
-                    // 有注释
-                    ? summarySeparatorIndex.Value - keyValueSeparatorIndex.Value - 1
-                    // 没注释
-                    : s.Length - keyValueSeparatorIndex.Value - 1)
-                    .Trim();
+                int? summarySeparatorIndex = null;
+                // 是否有注释
+                if (s.Contains(";"))
+                    // 有就设置分隔符索引
+                    summarySeparatorIndex = s.IndexOf(';');
+                // 有注释写注释
+                if (summarySeparatorIndex.HasValue)
+                    return (s.Substring(0, summarySeparatorIndex.Value).Trim(), s.Substring(summarySeparatorIndex.Value + 1).Trim());
+                else return (s, null);
             }
-            return keyValuePair;
+
+            (string key, string value) getValue(string s)
+            {
+                int? keyValueSeparatorIndex = null;
+                // 有没有键值对
+                if (s.Contains("="))
+                    // 获取键值对等号位置
+                    keyValueSeparatorIndex = s.IndexOf('=');
+
+                // 有数据写数据
+                if (keyValueSeparatorIndex.HasValue)
+                    return (s.Substring(0, keyValueSeparatorIndex.Value).Trim(), s.Substring(keyValueSeparatorIndex.Value + 1).Trim());
+                else return (null, null);
+            }
         }
 
         public override int GetHashCode()
