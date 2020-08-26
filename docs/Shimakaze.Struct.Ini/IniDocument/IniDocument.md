@@ -23,6 +23,10 @@ Inheritance [Object](//docs.microsoft.com/dotnet/api/system.object) -> [ValueTyp
 [GetFromNoSectionContent(string key)](Shimakaze.Struct.Ini/IniDocument/Methods/GetFromNoSectionContent.md)|从NoSectionContent中获取对象
 [GetHashCode()](//docs.microsoft.com/zh-cn/dotnet/api/system.object.gethashcode#System_Object_GetHashCode)|Serves as the default hash function. <br>(Inherited from Object)
 [ToString()](Shimakaze.Struct.Ini/IniDocument/Methods/ToString.md)|转换为INI字符串对象
+[ParseAsync](Shimakaze.Struct.Ini/IniDocument/Methods/ParseAsync.md)|从流中异步分析
+[TryGetKey](Shimakaze.Struct.Ini/IniDocument/Methods/TryGetKey.md)|尝试获取键
+[TryGetSection](Shimakaze.Struct.Ini/IniDocument/Methods/TryGetSection.md)|尝试获取节
+
 
 # See also
 - [IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)

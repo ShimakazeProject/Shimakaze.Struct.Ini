@@ -23,7 +23,7 @@ Inheritance [Object](//docs.microsoft.com/zh-cn/dotnet/api/system.object) -> [Va
 [Equals(object obj)](//docs.microsoft.com/dotnet/api/system.object.equals)|Determines whether the specified object is equal to the current object. <br>(Inherited from Object)
 [GetHashCode()](//docs.microsoft.com/zh-cn/dotnet/api/system.object.gethashcode)|Serves as the default hash function. <br>(Inherited from Object)
 [ToString()](Shimakaze.Struct.Ini/IniSection/Methods/ToString.md)|转换为常见的键值对形式
-
+[TryGetKey](Shimakaze.Struct.Ini/IniSection/Methods/TryGetKey.md)|尝试获取键
 ## See also
 - [IniSection]()
 - [IniKeyValue]()

@@ -4,5 +4,3 @@
     * [IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)
     * [IniKeyValuePair](Shimakaze.Struct.Ini/IniKeyValuePair/IniKeyValuePair.md)
     * [IniValue](Shimakaze.Struct.Ini/IniValue/IniValue.md)
-  * [Shimakaze.Struct.Ini.Helper](Shimakaze.Struct.Ini.Helper/Shimakaze.Struct.Ini.Helper.md)
-    * [IniDocumentHelper](Shimakaze.Struct.Ini.Helper/IniDocumentHelper/IniDocumentHelper.md)

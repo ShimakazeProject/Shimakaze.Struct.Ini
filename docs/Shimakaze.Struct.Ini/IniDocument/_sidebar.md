@@ -8,6 +8,9 @@
     * Methods
       * [GetFromNoSectionContent](Shimakaze.Struct.Ini/IniDocument/Methods/GetFromNoSectionContent.md)
       * [ToString](Shimakaze.Struct.Ini/IniDocument/Methods/ToString.md)
+      * [ParseAsync](Shimakaze.Struct.Ini/IniDocument/Methods/ParseAsync.md)
+      * [TryGetKey](Shimakaze.Struct.Ini/IniDocument/Methods/TryGetKey.md)
+      * [TryGetSection](Shimakaze.Struct.Ini/IniDocument/Methods/TryGetSection.md)
   * [IniKeyValuePair](Shimakaze.Struct.Ini/IniKeyValuePair/IniKeyValuePair.md)
   * [IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)
   * [IniValue](Shimakaze.Struct.Ini/IniValue/IniValue.md)

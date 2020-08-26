@@ -10,4 +10,5 @@
       * [Summary](Shimakaze.Struct.Ini/IniSection/Properties/Summary.md)
     * Methods
       * [ToString](Shimakaze.Struct.Ini/IniSection/Methods/ToString.md)
+      * [TryGetKey](Shimakaze.Struct.Ini/IniSection/Methods/TryGetKey.md)
   * [IniValue](Shimakaze.Struct.Ini/IniValue/IniValue.md)
