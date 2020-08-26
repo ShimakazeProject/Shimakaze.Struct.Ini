@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Shimakaze.Struct.Ini
 {
@@ -52,6 +54,77 @@ namespace Shimakaze.Struct.Ini
             foreach (var item in Sections)
                 sb.AppendLine(item.ToString());
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 从流中分析并返回<see cref="IniDocument"/>
+        /// </summary>
+        public static async Task<IniDocument> ParseAsync(Stream stream)
+        {
+            var sr = new StreamReader(stream);
+            var data = new List<IniSection>();
+            IniDocument document = new IniDocument();
+            IniSection? lastSection = null;
+            var lastSectionContent = new List<IniKeyValuePair>();
+            while (!sr.EndOfStream)
+            {
+                var line = await sr.ReadLineAsync();
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                if (line.TrimStart()[0].Equals('['))
+                {
+                    SaveSection();
+                    int? summarySeparatorIndex = null;
+                    if (line.Contains(";")) summarySeparatorIndex = line.IndexOf(';');
+
+                    var tmpSection = new IniSection { Name = line.TrimStart().Substring(1, line.IndexOf(']') - 1) };
+                    if (summarySeparatorIndex.HasValue) tmpSection.Summary = line.Substring(summarySeparatorIndex.Value);
+                    lastSection = tmpSection;
+                }
+                else
+                    lastSectionContent.Add(IniKeyValuePair.Parse(line));
+            }
+            SaveSection();
+            document.Sections = data.ToArray();
+            return document;
+
+            void SaveSection()
+            {
+                if (lastSection.HasValue)
+                {
+                    var section = lastSection.Value;
+                    section.Content = lastSectionContent.ToArray();
+                    data.Add(section);
+                }
+                else document.NoSectionContent = lastSectionContent.ToArray();
+                lastSectionContent.Clear();
+            }
+        }
+
+        public bool TryGetSection(string name, out IniSection? section)
+        {
+            section = null;
+            foreach (var item in Sections)
+            {
+                if (item.Name.Equals(name))
+                {
+                    section = item;
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
+        {
+            keyValuePair = null;
+            foreach (var item in NoSectionContent)
+            {
+                if (item.Key.Equals(name))
+                {
+                    keyValuePair = item;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

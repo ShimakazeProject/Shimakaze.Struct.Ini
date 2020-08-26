@@ -55,5 +55,20 @@ namespace Shimakaze.Struct.Ini
             }
             return sb.ToString();
         }
+
+
+        public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
+        {
+            keyValuePair = null;
+            foreach (var item in Content)
+            {
+                if (item.Key.Equals(name))
+                {
+                    keyValuePair = item;
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
