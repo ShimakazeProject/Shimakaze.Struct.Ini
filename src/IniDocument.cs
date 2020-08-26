@@ -130,7 +130,7 @@ namespace Shimakaze.Struct.Ini
             keyValuePair = null;
             foreach (var item in NoSectionContent)
             {
-                if (item.Key.Equals(name))
+                if (item.HasData && item.Key.Equals(name))
                 {
                     keyValuePair = item;
                     return true;
@@ -142,7 +142,7 @@ namespace Shimakaze.Struct.Ini
         {
             foreach (var item in NoSectionContent)
             {
-                if (item.Key.Equals(name))
+                if (item.HasData && item.Key.Equals(name))
                 {
                     return item;
                 }
