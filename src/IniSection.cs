@@ -70,5 +70,17 @@ namespace Shimakaze.Struct.Ini
             }
             return false;
         }
+
+        public IniKeyValuePair? TryGetKey(string name)
+        {
+            foreach (var item in Content)
+            {
+                if (item.Key.Equals(name))
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
     }
 }

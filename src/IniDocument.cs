@@ -113,6 +113,18 @@ namespace Shimakaze.Struct.Ini
             }
             return false;
         }
+        public IniSection? TryGetSection(string name)
+        {
+            foreach (var item in Sections)
+            {
+                if (item.Name.Equals(name))
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
         {
             keyValuePair = null;
@@ -125,6 +137,17 @@ namespace Shimakaze.Struct.Ini
                 }
             }
             return false;
+        }
+        public IniKeyValuePair? TryGetKey(string name)
+        {
+            foreach (var item in NoSectionContent)
+            {
+                if (item.Key.Equals(name))
+                {
+                    return item;
+                }
+            }
+            return null;
         }
     }
 }
