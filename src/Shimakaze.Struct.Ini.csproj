@@ -13,6 +13,9 @@
     <PackageProjectUrl>https://frg2089.github.io/Shimakaze.Struct.Ini/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/frg2089/Shimakaze.Struct.Ini</RepositoryUrl>
     <RepositoryType>public</RepositoryType>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
