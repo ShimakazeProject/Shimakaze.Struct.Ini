@@ -4,3 +4,4 @@
     * [IniSection](Shimakaze.Struct.Ini/IniSection/IniSection.md)
     * [IniKeyValuePair](Shimakaze.Struct.Ini/IniKeyValuePair/IniKeyValuePair.md)
     * [IniValue](Shimakaze.Struct.Ini/IniValue/IniValue.md)
+  * [Shimakaze.Struct.Csf](//frg2089.github.io/Shimakaze.Struct.Csf)
