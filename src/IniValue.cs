@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -40,22 +41,10 @@ namespace Shimakaze.Struct.Ini
 
         public static implicit operator decimal(IniValue value) => decimal.Parse(value.raw);
 
-        public static implicit operator bool(IniValue value) => value.raw[0] switch
-        {
-            'y' => true,
-            'Y' => true,
-            't' => true,
-            'T' => true,
-            '1' => true,
-
-            'n' => false,
-            'N' => false,
-            'f' => false,
-            'F' => false,
-            '0' => false,
-
-            _ => throw new FormatException($"{value.raw} is not bool")
-        };
+        public static implicit operator bool(IniValue value) =>
+            (new char[] { 'y', 'Y', 't', 'T', '1' }).Contains(value.raw[0]) ||
+            ((new char[] { 'n', 'N', 'f', 'F', '0' }).Contains(value.raw[0])
+            ? false : throw new FormatException($"{value.raw} is not bool"));
 
         public static implicit operator IniValue(string s) => new IniValue { raw = s };
 

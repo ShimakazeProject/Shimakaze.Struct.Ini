@@ -45,30 +45,30 @@ namespace Shimakaze.Struct.Ini
                 Summary = summaryTuple.summary
             };
 
-            (string data, string summary) getSummary(string s)
+            (string data, string summary) getSummary(string str)
             {
                 int? summarySeparatorIndex = null;
                 // 是否有注释
-                if (s.Contains(";"))
+                if (str.Contains(";"))
                     // 有就设置分隔符索引
-                    summarySeparatorIndex = s.IndexOf(';');
+                    summarySeparatorIndex = str.IndexOf(';');
                 // 有注释写注释
                 if (summarySeparatorIndex.HasValue)
-                    return (s.Substring(0, summarySeparatorIndex.Value).Trim(), s.Substring(summarySeparatorIndex.Value + 1).Trim());
-                else return (s, null);
+                    return (str.Substring(0, summarySeparatorIndex.Value).Trim(), str.Substring(summarySeparatorIndex.Value + 1).Trim());
+                else return (str, null);
             }
 
-            (string key, string value) getValue(string s)
+            (string key, string value) getValue(string str)
             {
                 int? keyValueSeparatorIndex = null;
                 // 有没有键值对
-                if (s.Contains("="))
+                if (str.Contains("="))
                     // 获取键值对等号位置
-                    keyValueSeparatorIndex = s.IndexOf('=');
+                    keyValueSeparatorIndex = str.IndexOf('=');
 
                 // 有数据写数据
                 if (keyValueSeparatorIndex.HasValue)
-                    return (s.Substring(0, keyValueSeparatorIndex.Value).Trim(), s.Substring(keyValueSeparatorIndex.Value + 1).Trim());
+                    return (str.Substring(0, keyValueSeparatorIndex.Value).Trim(), str.Substring(keyValueSeparatorIndex.Value + 1).Trim());
                 else return (null, null);
             }
         }
