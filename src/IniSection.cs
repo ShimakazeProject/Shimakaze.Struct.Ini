@@ -5,23 +5,27 @@ using System.Text;
 
 namespace Shimakaze.Struct.Ini
 {
-
+    /// <summary>
+    /// Ini Section Structure
+    /// </summary>
     public struct IniSection
     {
+        internal string name;
+        internal string summary;
+        internal IniKeyValuePair[] content;
+
         public IniKeyValuePair this[string key] => Content.First(i => i.Key.Equals(key));
 
         /// <summary>
-        /// 节名
+        /// Section Head
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get => name; set => name = value; }
         /// <summary>
-        /// 注释
+        /// Summary in Section Head Line
         /// </summary>
-        public string Summary { get; set; }
-        /// <summary>
-        /// 内容
-        /// </summary>
-        public IniKeyValuePair[] Content { get; set; }
+        public string Summary { get => summary; set => summary = value; }
+
+        public IniKeyValuePair[] Content { get => content; set => content = value; }
 
         public override bool Equals(object obj) => obj is IniSection section &&
                    Name == section.Name &&

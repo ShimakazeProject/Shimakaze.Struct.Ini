@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,23 +12,26 @@ namespace Shimakaze.Struct.Ini
     /// </summary>
     public struct IniDocument
     {
-        /// <summary>
-        /// 这里的 <see cref="IniKeyValuePair"/> 不属于当前 <see cref="IniDocument"/> 中的任何一个 <see cref="IniSection"/>
-        /// </summary>
-        public IniKeyValuePair[] NoSectionContent { get; set; }
+        internal IniKeyValuePair[] noSectionContent;
+        internal IniSection[] sections;
 
         /// <summary>
-        /// 当前 <see cref="IniDocument"/> 中的所有 <see cref="IniSection"/>
+        /// Here <see cref="IniKeyValuePair"/>s are Independent of <see cref="Sections"/>
         /// </summary>
-        public IniSection[] Sections { get; set; }
+        public IniKeyValuePair[] NoSectionContent { get => noSectionContent; set => noSectionContent = value; }
 
         /// <summary>
-        /// 获取一个 <see cref="IniSection"/>
+        /// All <see cref="IniSection"/>s on this <see cref="IniDocument"/>
+        /// </summary>
+        public IniSection[] Sections { get => sections; set => sections = value; }
+
+        /// <summary>
+        /// Get an <see cref="IniSection"/> from <see cref="Sections"/>
         /// </summary>
         public IniSection this[string sectionName] => Sections.First(i => i.Name.Equals(sectionName));
 
         /// <summary>
-        /// 从 <see cref="NoSectionContent"/> 中获取一个 <see cref="IniKeyValuePair"/>
+        /// Get an <see cref="IniKeyValuePair"/> from <see cref="NoSectionContent"/>
         /// </summary>
         public IniKeyValuePair GetFromNoSectionContent(string key) => NoSectionContent.First(i => i.Key.Equals(key));
 
@@ -44,7 +48,7 @@ namespace Shimakaze.Struct.Ini
         }
 
         /// <summary>
-        /// 转换为ini文档
+        /// Convert to String 
         /// </summary>
         public override string ToString()
         {
@@ -59,7 +63,7 @@ namespace Shimakaze.Struct.Ini
         /// <summary>
         /// 从流中分析并返回<see cref="IniDocument"/>
         /// </summary>
-        public static async Task<IniDocument> ParseAsync(Stream stream)
+        public static async Task<IniDocument> SerializeAsync(Stream stream)
         {
             var sr = new StreamReader(stream);
             var data = new List<IniSection>();
@@ -99,7 +103,11 @@ namespace Shimakaze.Struct.Ini
                 lastSectionContent.Clear();
             }
         }
-
+        /// <summary>
+        /// please use <see cref="SerializeAsync"/>
+        /// </summary>
+        [Obsolete("please use SerializeAsync")]
+        public static Task<IniDocument> ParseAsync(Stream stream) => SerializeAsync(stream);
         public bool TryGetSection(string name, out IniSection? section)
         {
             section = null;

@@ -4,46 +4,51 @@ using System.Text;
 namespace Shimakaze.Struct.Ini
 {
     /// <summary>
-    /// 表示一个INI键值对
+    /// an IniKeyValuePair
     /// </summary>
     public struct IniKeyValuePair
     {
-        /// <summary>
-        /// 键
-        /// </summary>
-        public string Key { get; set; }
-        /// <summary>
-        /// 值
-        /// </summary>
-        public IniValue Value { get; set; }
-        /// <summary>
-        /// 注释
-        /// </summary>
-        public string Summary { get; set; }
-        /// <summary>
-        /// 是否有可用数据
-        /// </summary>
+        internal string key;
+        internal IniValue value;
+        internal string summary;
+
+        public IniKeyValuePair(string key, string value = null, string summary = null)
+        {
+            this.key = key;
+            this.value = value;
+            this.summary = summary;
+        }
+
+        public string Key
+        {
+            get => this.key;
+            set => this.key = value;
+        }
+        public IniValue Value
+        {
+            get => this.value;
+            set => this.value = value;
+        }
+        public string Summary
+        {
+            get => this.summary;
+            set => this.summary = value;
+        }
         public bool HasData => !string.IsNullOrEmpty(Key);
-        /// <summary>
-        /// 是否存在注释
-        /// </summary>
         public bool HasSummary => !string.IsNullOrEmpty(Summary);
 
+        public static implicit operator KeyValuePair<string, string>(IniKeyValuePair ikv) => new KeyValuePair<string, string>(ikv.key, ikv.value);
+        public static implicit operator IniKeyValuePair(KeyValuePair<string, string> kv) => new IniKeyValuePair(kv.Key, kv.Value);
 
         /// <summary>
-        /// 从字符串生成键值对
+        /// Get KeyValuePair From String
         /// </summary>
         public static IniKeyValuePair Parse(string s)
         {
             var summaryTuple = getSummary(s);
             var dataTuple = getValue(summaryTuple.data);
 
-            return new IniKeyValuePair
-            {
-                Key = dataTuple.key,
-                Value = dataTuple.value,
-                Summary = summaryTuple.summary
-            };
+            return new IniKeyValuePair(dataTuple.key, dataTuple.value, summaryTuple.summary);
 
             (string data, string summary) getSummary(string str)
             {
@@ -86,9 +91,7 @@ namespace Shimakaze.Struct.Ini
                    Key == pair.Key &&
                    EqualityComparer<IniValue>.Default.Equals(Value, pair.Value) &&
                    Summary == pair.Summary;
-        /// <summary>
-        /// 转换为常见的键值对形式
-        /// </summary>
+
         public override string ToString()
         {
             var sb = new StringBuilder();
