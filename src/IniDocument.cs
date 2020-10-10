@@ -76,9 +76,15 @@ namespace Shimakaze.Struct.Ini
         public async Task DeparseAsync(TextWriter writer)
         {
             foreach (var item in this.NoSectionContent)
+            {
                 await item.DepraseAsync(writer);
+                await writer.WriteLineAsync();
+            }
             foreach (var item in this.Sections)
+            {
                 await item.DepraseAsync(writer);
+                await writer.WriteLineAsync();
+            }
         }
         public override bool Equals(object obj) => obj is IniDocument document &&
                            EqualityComparer<IniKeyValuePair[]>.Default.Equals(this.NoSectionContent, document.NoSectionContent) &&
@@ -122,8 +128,8 @@ namespace Shimakaze.Struct.Ini
 
         public IniKeyValuePair? TryGetKey(string name)
         {
-            foreach (var item in this.NoSectionContent.Where(item => item.HasData && item.Key.Equals(name)))            
-                return item;            
+            foreach (var item in this.NoSectionContent.Where(item => item.HasData && item.Key.Equals(name)))
+                return item;
 
             return null;
         }
@@ -143,7 +149,7 @@ namespace Shimakaze.Struct.Ini
         {
             foreach (var item in this.Sections.Where(item => item.Name.Equals(name)))
                 return item;
-            
+
             return null;
         }
     }

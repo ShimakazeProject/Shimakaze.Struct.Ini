@@ -43,7 +43,10 @@ namespace Shimakaze.Struct.Ini
                 await writer.WriteAsync($";{this.Summary}");
             await writer.WriteLineAsync();
             foreach (var item in this.Content)
+            {
                 await item.DepraseAsync(writer);
+                await writer.WriteLineAsync();
+            }
         }
 
         public override bool Equals(object obj) => obj is IniSection section &&
