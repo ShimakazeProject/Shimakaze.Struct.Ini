@@ -1,62 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Shimakaze.Struct.Ini
 {
     /// <summary>
     /// Ini Section Structure
     /// </summary>
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public struct IniSection
     {
-        internal string name;
-        internal string summary;
-        internal IniKeyValuePair[] content;
-
-        public IniKeyValuePair this[string key] => Content.First(i => i.Key.Equals(key));
+        public IniKeyValuePair[] Content { get; set; }
 
         /// <summary>
         /// Section Head
         /// </summary>
-        public string Name { get => name; set => name = value; }
+        public string Name { get; set; }
+
         /// <summary>
         /// Summary in Section Head Line
         /// </summary>
-        public string Summary { get => summary; set => summary = value; }
+        public string Summary { get; set; }
 
-        public IniKeyValuePair[] Content { get => content; set => content = value; }
+        public IniSection(string name, string summary, IniKeyValuePair[] content)
+        {
+            this.Name = name;
+            this.Summary = summary;
+            this.Content = content;
+        }
+
+        public IniKeyValuePair this[string key] => this.Content.First(i => i.Key.Equals(key));
+        private string GetDebuggerDisplay() => this.ToString();
+
+        public async Task DepraseAsync(TextWriter writer)
+        {
+            await writer.WriteAsync($"[{this.Name}]");
+            if (!string.IsNullOrEmpty(this.Summary))
+                await writer.WriteAsync($";{this.Summary}");
+            await writer.WriteLineAsync();
+            foreach (var item in this.Content)
+                await item.DepraseAsync(writer);
+        }
 
         public override bool Equals(object obj) => obj is IniSection section &&
-                   Name == section.Name &&
-                   Summary == section.Summary &&
-                   EqualityComparer<IniKeyValuePair[]>.Default.Equals(Content, section.Content);
+                                   this.Name == section.Name &&
+                   this.Summary == section.Summary &&
+                   EqualityComparer<IniKeyValuePair[]>.Default.Equals(this.Content, section.Content);
 
         public override int GetHashCode()
         {
             int hashCode = 117231219;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Summary);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IniKeyValuePair[]>.Default.GetHashCode(Content);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Summary);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IniKeyValuePair[]>.Default.GetHashCode(this.Content);
             return hashCode;
         }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append('[');
-            sb.Append(Name);
-            sb.Append(']');
-            if (!string.IsNullOrEmpty(Summary))
-            {
-                sb.Append(';');
-                sb.Append(Summary);
-            }
+            sb.Append($"[{this.Name}]");
+            if (!string.IsNullOrEmpty(this.Summary))
+                sb.Append($";{this.Summary}");
             sb.AppendLine();
-            foreach (var item in Content)
-            {
+            foreach (var item in this.Content)
                 sb.AppendLine(item.ToString());
-            }
             return sb.ToString();
         }
 
@@ -64,7 +76,7 @@ namespace Shimakaze.Struct.Ini
         public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
         {
             keyValuePair = null;
-            foreach (var item in Content)
+            foreach (var item in this.Content)
             {
                 if (item.HasData && item.Key.Equals(name))
                 {
@@ -77,13 +89,9 @@ namespace Shimakaze.Struct.Ini
 
         public IniKeyValuePair? TryGetKey(string name)
         {
-            foreach (var item in Content)
-            {
+            foreach (var item in this.Content)
                 if (item.HasData && item.Key.Equals(name))
-                {
                     return item;
-                }
-            }
             return null;
         }
     }

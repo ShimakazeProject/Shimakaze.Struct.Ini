@@ -4,16 +4,17 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Authors>frg2089</Authors>
-    <Company>frg2089</Company>
-    <Copyright>Copyright (c) Shimakaze.Struct.Ini Contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://frg2089.github.io/Shimakaze.Struct.Ini/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/frg2089/Shimakaze.Struct.Ini</RepositoryUrl>
+    <Authors>Shimakaze.Struct.Ini Contributors</Authors>
+    <Company>Shimakaze Project</Company>
+    <Copyright>Copyright (c) Shimakaze.Struct.Ini Contributors</Copyright>
+    <PackageProjectUrl>https://shimakazeproj.github.io/Shimakaze.Struct.Ini/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ShimakazeProj/Shimakaze.Struct.Ini</RepositoryUrl>
     <RepositoryType>public</RepositoryType>
-    <AssemblyVersion>1.0.1.1</AssemblyVersion>
-    <FileVersion>1.0.1.1</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.1.3</AssemblyVersion>
+    <FileVersion>1.0.1.3</FileVersion>
+    <Version>1.0.4</Version>
+    <Description>用于解析INI</Description>
   </PropertyGroup>
 
 </Project>

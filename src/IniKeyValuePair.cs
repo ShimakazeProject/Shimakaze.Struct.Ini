@@ -1,54 +1,47 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Shimakaze.Struct.Ini
 {
     /// <summary>
     /// an IniKeyValuePair
     /// </summary>
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "(),nq}")]
     public struct IniKeyValuePair
     {
-        internal string key;
-        internal IniValue value;
-        internal string summary;
+        private string DebuggerDisplay => this.ToString();
+
+        public bool HasData => !string.IsNullOrEmpty(this.Key);
+
+        public bool HasSummary => !string.IsNullOrWhiteSpace(this.Summary);
+
+        public string Key { get; set; }
+
+        public string Summary { get; set; }
+
+        public IniValue Value { get; set; }
 
         public IniKeyValuePair(string key, string value = null, string summary = null)
         {
-            this.key = key;
-            this.value = value;
-            this.summary = summary;
+            this.Key = key;
+            this.Value = value;
+            this.Summary = summary;
         }
-
-        public string Key
-        {
-            get => this.key;
-            set => this.key = value;
-        }
-        public IniValue Value
-        {
-            get => this.value;
-            set => this.value = value;
-        }
-        public string Summary
-        {
-            get => this.summary;
-            set => this.summary = value;
-        }
-        public bool HasData => !string.IsNullOrEmpty(Key);
-        public bool HasSummary => !string.IsNullOrEmpty(Summary);
-
-        public static implicit operator KeyValuePair<string, string>(IniKeyValuePair ikv) => new KeyValuePair<string, string>(ikv.key, ikv.value);
         public static implicit operator IniKeyValuePair(KeyValuePair<string, string> kv) => new IniKeyValuePair(kv.Key, kv.Value);
 
+        public static implicit operator KeyValuePair<string, string>(IniKeyValuePair ikv) => new KeyValuePair<string, string>(ikv.Key, ikv.Value);
         /// <summary>
         /// Get KeyValuePair From String
         /// </summary>
         public static IniKeyValuePair Parse(string s)
         {
-            var summaryTuple = getSummary(s);
-            var dataTuple = getValue(summaryTuple.data);
+            var (data, summary) = getSummary(s);
+            var (key, value) = getValue(data);
 
-            return new IniKeyValuePair(dataTuple.key, dataTuple.value, summaryTuple.summary);
+            return new IniKeyValuePair(key, value, summary);
 
             (string data, string summary) getSummary(string str)
             {
@@ -78,34 +71,36 @@ namespace Shimakaze.Struct.Ini
             }
         }
 
+        public async Task DepraseAsync(TextWriter writer)
+        {
+            if (!string.IsNullOrWhiteSpace(this.Key) && !string.IsNullOrWhiteSpace(this.Value))
+                await writer.WriteAsync($"{this.Key}={this.Value}");
+
+            if (HasSummary)
+                await writer.WriteAsync($";{this.Summary}");
+
+        }
+
+        public override bool Equals(object obj) => obj is IniKeyValuePair pair
+                                                   && this.Key == pair.Key
+                                                   && this.Value == pair.Value
+                                                   && this.Summary == pair.Summary;
+
         public override int GetHashCode()
         {
             int hashCode = 1424931193;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
-            hashCode = hashCode * -1521134295 + Value.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Summary);
+            hashCode = hashCode * -1521134295 + this.Key.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Value.GetHashCode();
+            hashCode = (hashCode * -1521134295) + this.Summary.GetHashCode();
             return hashCode;
         }
-
-        public override bool Equals(object obj) => obj is IniKeyValuePair pair &&
-                   Key == pair.Key &&
-                   EqualityComparer<IniValue>.Default.Equals(Value, pair.Value) &&
-                   Summary == pair.Summary;
-
         public override string ToString()
         {
             var sb = new StringBuilder();
-            if (string.IsNullOrWhiteSpace(Key) && string.IsNullOrWhiteSpace(Value))
-            {
-                sb.Append(Key);
-                sb.Append('=');
-                sb.Append(Key);
-            }
-            if (string.IsNullOrWhiteSpace(Summary))
-            {
-                sb.Append(';');
-                sb.Append(Summary);
-            }
+            if (!string.IsNullOrWhiteSpace(this.Key) && !string.IsNullOrWhiteSpace(this.Value))
+                sb.Append($"{this.Key}={this.Value}");
+            if (this.HasSummary)
+                sb.Append($";{this.Summary}");
             return sb.ToString();
         }
     }
