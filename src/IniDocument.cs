@@ -73,18 +73,21 @@ namespace Shimakaze.Struct.Ini
         }
 
 
+        public Task DeparseAsync(Stream stream) => DeparseAsync(new StreamWriter(stream));
         public async Task DeparseAsync(TextWriter writer)
         {
-            foreach (var item in this.NoSectionContent)
-            {
-                await item.DepraseAsync(writer);
-                await writer.WriteLineAsync();
-            }
-            foreach (var item in this.Sections)
-            {
-                await item.DepraseAsync(writer);
-                await writer.WriteLineAsync();
-            }
+            if ((this.NoSectionContent?.Length ?? 0) > 0)
+                foreach (var item in this.NoSectionContent)
+                {
+                    await item.DepraseAsync(writer);
+                    await writer.WriteLineAsync();
+                }
+            if ((this.Sections?.Length ?? 0) > 0)
+                foreach (var item in this.Sections)
+                {
+                    await item.DepraseAsync(writer);
+                    await writer.WriteLineAsync();
+                }
         }
         public override bool Equals(object obj) => obj is IniDocument document &&
                            EqualityComparer<IniKeyValuePair[]>.Default.Equals(this.NoSectionContent, document.NoSectionContent) &&
