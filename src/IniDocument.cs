@@ -12,6 +12,7 @@ namespace Shimakaze.Struct.Ini
     /// </summary>
     public struct IniDocument
     {
+        #region 用户属性
         /// <summary>
         /// Here <see cref="IniKeyValuePair"/>s are Independent of <see cref="Sections"/>
         /// </summary>
@@ -21,12 +22,17 @@ namespace Shimakaze.Struct.Ini
         /// All <see cref="IniSection"/>s on this <see cref="IniDocument"/>
         /// </summary>
         public IniSection[] Sections { get; set; }
+        #endregion
 
+        #region 访问器
         /// <summary>
         /// Get an <see cref="IniSection"/> from <see cref="Sections"/>
         /// </summary>
-        public IniSection this[string sectionName] => this.Sections.First(i => i.Name.Equals(sectionName));
+        public IniSection this[string sectionName] => this.Sections.First(i => sectionName.Equals(i.Name));
 
+        #endregion
+
+        #region 用户方法
         /// <summary>
         /// 从流中分析并返回<see cref="IniDocument"/>
         /// </summary>
@@ -72,8 +78,8 @@ namespace Shimakaze.Struct.Ini
             }
         }
 
-
         public Task DeparseAsync(Stream stream) => DeparseAsync(new StreamWriter(stream));
+
         public async Task DeparseAsync(TextWriter writer)
         {
             if ((this.NoSectionContent?.Length ?? 0) > 0)
@@ -89,6 +95,9 @@ namespace Shimakaze.Struct.Ini
                     await writer.WriteLineAsync();
                 }
         }
+        #endregion
+
+        #region Object重载
         public override bool Equals(object obj) => obj is IniDocument document &&
                            EqualityComparer<IniKeyValuePair[]>.Default.Equals(this.NoSectionContent, document.NoSectionContent) &&
                            EqualityComparer<IniSection[]>.Default.Equals(this.Sections, document.Sections);
@@ -96,7 +105,7 @@ namespace Shimakaze.Struct.Ini
         /// <summary>
         /// Get an <see cref="IniKeyValuePair"/> from <see cref="NoSectionContent"/>
         /// </summary>
-        public IniKeyValuePair GetFromNoSectionContent(string key) => this.NoSectionContent.First(i => i.Key.Equals(key));
+        public IniKeyValuePair GetFromNoSectionContent(string key) => this.NoSectionContent.First(i => key.Equals(i.Key));
         public override int GetHashCode()
         {
             int hashCode = -180461457;
@@ -117,10 +126,13 @@ namespace Shimakaze.Struct.Ini
                 sb.AppendLine(item.ToString());
             return sb.ToString();
         }
+        #endregion
+
+        #region Try方法
         public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
         {
             keyValuePair = null;
-            foreach (var item in this.NoSectionContent.Where(item => item.HasData && item.Key.Equals(name)))
+            foreach (var item in this.NoSectionContent.Where(item => name.Equals(item.Key)))
             {
                 keyValuePair = item;
                 return true;
@@ -131,7 +143,7 @@ namespace Shimakaze.Struct.Ini
 
         public IniKeyValuePair? TryGetKey(string name)
         {
-            foreach (var item in this.NoSectionContent.Where(item => item.HasData && item.Key.Equals(name)))
+            foreach (var item in this.NoSectionContent.Where(item => name.Equals(item.Key)))
                 return item;
 
             return null;
@@ -140,7 +152,7 @@ namespace Shimakaze.Struct.Ini
         public bool TryGetSection(string name, out IniSection? section)
         {
             section = null;
-            foreach (var item in this.Sections.Where(item => item.Name.Equals(name)))
+            foreach (var item in this.Sections.Where(item => name.Equals(item.Name)))
             {
                 section = item;
                 return true;
@@ -150,10 +162,11 @@ namespace Shimakaze.Struct.Ini
         }
         public IniSection? TryGetSection(string name)
         {
-            foreach (var item in this.Sections.Where(item => item.Name.Equals(name)))
+            foreach (var item in this.Sections.Where(item => name.Equals(item.Name)))
                 return item;
 
             return null;
         }
+        #endregion
     }
 }

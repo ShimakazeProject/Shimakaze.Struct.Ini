@@ -10,26 +10,27 @@ namespace Shimakaze.Struct.Ini
     /// <summary>
     /// a value for IniKeyValuePair
     /// </summary>
-    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
+    [DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
     public struct IniValue
     {
         // 数据源
         internal string raw;
-
-        public IniValue(string raw) => this.raw = raw;
-
         /// <summary>
         /// if (this is Not Empty) return true;<br/>
         /// else return false
         /// </summary>
         public bool HasData => !string.IsNullOrEmpty(this.raw);
+
+        public IniValue(string raw) => this.raw = raw;
+
+        #region Object重载
         public override bool Equals(object obj) => obj is IniValue value && this.raw.Equals(value.raw);
 
         public override int GetHashCode() => 875105689 + this.raw.GetHashCode();
-        private string GetDebuggerDisplay() => this.ToString();
-
         public override string ToString() => this.raw;
+        #endregion
 
+        #region 转换到常用类型
         public static implicit operator string(IniValue value) => value.ToString();
 
         public static explicit operator byte(IniValue value) => byte.Parse(value.raw);
@@ -56,13 +57,15 @@ namespace Shimakaze.Struct.Ini
             (new char[] { 'y', 'Y', 't', 'T', '1' }).Contains(value.raw[0]) ||
             ((new char[] { 'n', 'N', 'f', 'F', '0' }).Contains(value.raw[0])
             ? false : throw new FormatException($"{value.raw} is not bool"));
+        #endregion
 
+        #region 自动转换为IniValue
         public static implicit operator IniValue(string s) => new IniValue(s);
-
         public static implicit operator IniValue(int i) => new IniValue(i.ToString());
         public static implicit operator IniValue(long i) => new IniValue(i.ToString());
+        public static implicit operator IniValue(bool i) => new IniValue(i.ToString());
         public static implicit operator IniValue(double d) => new IniValue(d.ToString());
         public static implicit operator IniValue(decimal i) => new IniValue(i.ToString());
-
+        #endregion
     }
 }

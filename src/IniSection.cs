@@ -11,9 +11,9 @@ namespace Shimakaze.Struct.Ini
     /// <summary>
     /// Ini Section Structure
     /// </summary>
-    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public struct IniSection
     {
+        #region 用户属性
         public IniKeyValuePair[] Content { get; set; }
 
         /// <summary>
@@ -25,7 +25,9 @@ namespace Shimakaze.Struct.Ini
         /// Summary in Section Head Line
         /// </summary>
         public string Summary { get; set; }
+        #endregion
 
+        #region 构造方法
         public IniSection(string name, string summary, IniKeyValuePair[] content)
         {
             this.Name = name;
@@ -33,9 +35,14 @@ namespace Shimakaze.Struct.Ini
             this.Content = content;
         }
 
-        public IniKeyValuePair this[string key] => this.Content.First(i => i.Key.Equals(key));
-        private string GetDebuggerDisplay() => this.ToString();
+        #endregion
 
+        #region 访问器
+        public IniKeyValuePair this[string key] => this.Content.First(i => key.Equals(i.Key));
+
+        #endregion
+
+        #region 用户方法
         public async Task DepraseAsync(TextWriter writer)
         {
             await writer.WriteAsync($"[{this.Name}]");
@@ -48,7 +55,9 @@ namespace Shimakaze.Struct.Ini
                 await writer.WriteLineAsync();
             }
         }
+        #endregion
 
+        #region Object重载
         public override bool Equals(object obj) => obj is IniSection section &&
                                    this.Name == section.Name &&
                    this.Summary == section.Summary &&
@@ -74,14 +83,15 @@ namespace Shimakaze.Struct.Ini
                 sb.AppendLine(item.ToString());
             return sb.ToString();
         }
+        #endregion
 
-
+        #region Try方法
         public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
         {
             keyValuePair = null;
             foreach (var item in this.Content)
             {
-                if (item.HasData && item.Key.Equals(name))
+                if (item.HasData && name.Equals(item.Key))
                 {
                     keyValuePair = item;
                     return true;
@@ -93,9 +103,10 @@ namespace Shimakaze.Struct.Ini
         public IniKeyValuePair? TryGetKey(string name)
         {
             foreach (var item in this.Content)
-                if (item.HasData && item.Key.Equals(name))
+                if (item.HasData && name.Equals(item.Key))
                     return item;
             return null;
         }
+        #endregion
     }
 }
