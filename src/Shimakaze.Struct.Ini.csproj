@@ -8,13 +8,13 @@
     <Authors>Shimakaze.Struct.Ini Contributors</Authors>
     <Company>Shimakaze Project</Company>
     <Copyright>Copyright (c) Shimakaze.Struct.Ini Contributors</Copyright>
-    <PackageProjectUrl>https://shimakazeproj.github.io/Shimakaze.Struct.Ini/</PackageProjectUrl>
+    <PackageProjectUrl>https://shimakazeproj.github.io/docs/#/Shimakaze.Struct.Ini/index</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ShimakazeProj/Shimakaze.Struct.Ini</RepositoryUrl>
     <RepositoryType>public</RepositoryType>
-    <AssemblyVersion>1.0.1.314</AssemblyVersion>
-    <FileVersion>1.0.1.4</FileVersion>
-    <Version>1.0.5</Version>
-    <Description>用于解析INI</Description>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <FileVersion>1.0.6</FileVersion>
+    <Version>1.0.6</Version>
+    <Description>处理 命令与征服 系列的游戏配置文件用的工具库</Description>
   </PropertyGroup>
 
 </Project>
