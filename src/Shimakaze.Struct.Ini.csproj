@@ -13,7 +13,7 @@
     <RepositoryType>public</RepositoryType>
     <AssemblyVersion>1.0.1.314</AssemblyVersion>
     <FileVersion>1.0.1.4</FileVersion>
-    <Version>1.0.5</Version>
+    <Version>1.0.6-preview1</Version>
     <Description>用于解析INI</Description>
   </PropertyGroup>
 

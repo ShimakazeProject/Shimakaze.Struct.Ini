@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,39 +10,50 @@ namespace Shimakaze.Struct.Ini
     /// <summary>
     /// 表示一个Ini文档
     /// </summary>
-    public struct IniDocument
+    public sealed class IniDocument : IList<IniSection>, IList<IniKeyValuePair>
     {
-        #region 用户属性
+
+        #region Public Properties
+
         /// <summary>
-        /// Here <see cref="IniKeyValuePair"/>s are Independent of <see cref="Sections"/>
+        /// Here <see cref="IniKeyValuePair" /> s are Independent of <see cref="Sections" />
         /// </summary>
-        public IniKeyValuePair[] NoSectionContent { get; set; }
+        public List<IniKeyValuePair> NoSectionContent { get; set; }
 
         /// <summary>
-        /// All <see cref="IniSection"/>s on this <see cref="IniDocument"/>
+        /// All <see cref="IniSection" /> s on this <see cref="IniDocument" />
         /// </summary>
-        public IniSection[] Sections { get; set; }
-        #endregion
+        public List<IniSection> Sections { get; set; }
 
-        #region 访问器
+        public int Count => ((ICollection<IniSection>)Sections).Count;
+
+        public bool IsReadOnly => ((ICollection<IniSection>)Sections).IsReadOnly;
+
+        #endregion Public Properties
+
+        #region Public Indexers
+
         /// <summary>
-        /// Get an <see cref="IniSection"/> from <see cref="Sections"/>
+        /// Get an <see cref="IniSection" /> from <see cref="Sections" />
         /// </summary>
-        public IniSection this[string sectionName] => this.Sections.First(i => sectionName.Equals(i.Name));
+        public IniSection this[string sectionName] => Sections.First(i => sectionName.Equals(i.Name));
 
-        #endregion
+        public IniSection this[int index] { get => ((IList<IniSection>)Sections)[index]; set => ((IList<IniSection>)Sections)[index] = value; }
+        IniKeyValuePair IList<IniKeyValuePair>.this[int index] { get => ((IList<IniKeyValuePair>)NoSectionContent)[index]; set => ((IList<IniKeyValuePair>)NoSectionContent)[index] = value; }
 
-        #region 用户方法
+        #endregion Public Indexers
+
+        #region Public Methods
+
         /// <summary>
-        /// 从流中分析并返回<see cref="IniDocument"/>
+        /// 从流中分析并返回 <see cref="IniDocument" />
         /// </summary>
         public static Task<IniDocument> ParseAsync(Stream stream) => ParseAsync(new StreamReader(stream));
 
         public static async Task<IniDocument> ParseAsync(TextReader reader)
         {
-            var data = new List<IniSection>();
-            IniDocument document = new IniDocument();
-            IniSection? lastSection = null;
+            var document = new IniDocument();
+            IniSection lastSection = null;
             var lastSectionContent = new List<IniKeyValuePair>();
             while (reader.Peek() > 0)
             {
@@ -62,77 +73,90 @@ namespace Shimakaze.Struct.Ini
                     lastSectionContent.Add(await Task.Run(() => IniKeyValuePair.Parse(line)));
             }
             SaveSection();
-            document.Sections = data.ToArray();
             return document;
 
             void SaveSection()
             {
-                if (lastSection.HasValue)
+                if (lastSection is IniSection)
                 {
-                    var section = lastSection.Value;
-                    section.Content = lastSectionContent.ToArray();
-                    data.Add(section);
+                    lastSection.Content = lastSectionContent;
+                    document.Sections.Add(lastSection);
                 }
-                else document.NoSectionContent = lastSectionContent.ToArray();
+                else document.NoSectionContent = lastSectionContent;
                 lastSectionContent.Clear();
             }
         }
+
+        public void Add(IniSection item) => ((ICollection<IniSection>)Sections).Add(item);
+
+        public void Add(IniKeyValuePair item) => ((ICollection<IniKeyValuePair>)NoSectionContent).Add(item);
+
+        public void Clear() => ((ICollection<IniSection>)Sections).Clear();
+
+        public bool Contains(IniSection item) => ((ICollection<IniSection>)Sections).Contains(item);
+
+        public bool Contains(IniKeyValuePair item) => ((ICollection<IniKeyValuePair>)NoSectionContent).Contains(item);
+
+        public void CopyTo(IniSection[] array, int arrayIndex) => ((ICollection<IniSection>)Sections).CopyTo(array, arrayIndex);
+
+        public void CopyTo(IniKeyValuePair[] array, int arrayIndex) => ((ICollection<IniKeyValuePair>)NoSectionContent).CopyTo(array, arrayIndex);
 
         public Task DeparseAsync(Stream stream) => DeparseAsync(new StreamWriter(stream));
 
         public async Task DeparseAsync(TextWriter writer)
         {
-            if ((this.NoSectionContent?.Length ?? 0) > 0)
-                foreach (var item in this.NoSectionContent)
+            if ((NoSectionContent?.Count ?? 0) > 0)
+                foreach (var item in NoSectionContent)
                 {
                     await item.DepraseAsync(writer);
                     await writer.WriteLineAsync();
                 }
-            if ((this.Sections?.Length ?? 0) > 0)
-                foreach (var item in this.Sections)
+            if ((Sections?.Count ?? 0) > 0)
+                foreach (var item in Sections)
                 {
                     await item.DepraseAsync(writer);
                     await writer.WriteLineAsync();
                 }
         }
-        #endregion
 
-        #region Object重载
-        public override bool Equals(object obj) => obj is IniDocument document &&
-                           EqualityComparer<IniKeyValuePair[]>.Default.Equals(this.NoSectionContent, document.NoSectionContent) &&
-                           EqualityComparer<IniSection[]>.Default.Equals(this.Sections, document.Sections);
+        public IEnumerator<IniSection> GetEnumerator() => ((IEnumerable<IniSection>)Sections).GetEnumerator();
 
         /// <summary>
-        /// Get an <see cref="IniKeyValuePair"/> from <see cref="NoSectionContent"/>
+        /// Get an <see cref="IniKeyValuePair" /> from <see cref="NoSectionContent" />
         /// </summary>
-        public IniKeyValuePair GetFromNoSectionContent(string key) => this.NoSectionContent.First(i => key.Equals(i.Key));
-        public override int GetHashCode()
-        {
-            int hashCode = -180461457;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IniKeyValuePair[]>.Default.GetHashCode(this.NoSectionContent);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IniSection[]>.Default.GetHashCode(this.Sections);
-            return hashCode;
-        }
+        public IniKeyValuePair GetFromNoSectionContent(string key) => NoSectionContent.First(i => key.Equals(i.Key));
+
+        public int IndexOf(IniSection item) => ((IList<IniSection>)Sections).IndexOf(item);
+
+        public int IndexOf(IniKeyValuePair item) => ((IList<IniKeyValuePair>)NoSectionContent).IndexOf(item);
+
+        public void Insert(int index, IniSection item) => ((IList<IniSection>)Sections).Insert(index, item);
+
+        public void Insert(int index, IniKeyValuePair item) => ((IList<IniKeyValuePair>)NoSectionContent).Insert(index, item);
+
+        public bool Remove(IniSection item) => ((ICollection<IniSection>)Sections).Remove(item);
+
+        public bool Remove(IniKeyValuePair item) => ((ICollection<IniKeyValuePair>)NoSectionContent).Remove(item);
+
+        public void RemoveAt(int index) => ((IList<IniSection>)Sections).RemoveAt(index);
 
         /// <summary>
-        /// Convert to String 
+        /// Convert to String
         /// </summary>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            foreach (var item in this.NoSectionContent)
+            foreach (var item in NoSectionContent)
                 sb.AppendLine(item.ToString());
-            foreach (var item in this.Sections)
+            foreach (var item in Sections)
                 sb.AppendLine(item.ToString());
             return sb.ToString();
         }
-        #endregion
 
-        #region Try方法
-        public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
+        public bool TryGetKey(string name, out IniKeyValuePair keyValuePair)
         {
             keyValuePair = null;
-            foreach (var item in this.NoSectionContent.Where(item => name.Equals(item.Key)))
+            foreach (var item in NoSectionContent.Where(item => name.Equals(item.Key)))
             {
                 keyValuePair = item;
                 return true;
@@ -141,18 +165,18 @@ namespace Shimakaze.Struct.Ini
             return false;
         }
 
-        public IniKeyValuePair? TryGetKey(string name)
+        public IniKeyValuePair TryGetKey(string name)
         {
-            foreach (var item in this.NoSectionContent.Where(item => name.Equals(item.Key)))
+            foreach (var item in NoSectionContent.Where(item => name.Equals(item.Key)))
                 return item;
 
             return null;
         }
 
-        public bool TryGetSection(string name, out IniSection? section)
+        public bool TryGetSection(string name, out IniSection section)
         {
             section = null;
-            foreach (var item in this.Sections.Where(item => name.Equals(item.Name)))
+            foreach (var item in Sections.Where(item => name.Equals(item.Name)))
             {
                 section = item;
                 return true;
@@ -160,13 +184,20 @@ namespace Shimakaze.Struct.Ini
 
             return false;
         }
-        public IniSection? TryGetSection(string name)
+
+        public IniSection TryGetSection(string name)
         {
-            foreach (var item in this.Sections.Where(item => name.Equals(item.Name)))
+            foreach (var item in Sections.Where(item => name.Equals(item.Name)))
                 return item;
 
             return null;
         }
-        #endregion
+
+        IEnumerator IEnumerable.GetEnumerator() => Sections.GetEnumerator();
+
+        IEnumerator<IniKeyValuePair> IEnumerable<IniKeyValuePair>.GetEnumerator() => ((IEnumerable<IniKeyValuePair>)NoSectionContent).GetEnumerator();
+
+        #endregion Public Methods
+
     }
 }

@@ -11,44 +11,70 @@ namespace Shimakaze.Struct.Ini
     /// an IniKeyValuePair
     /// </summary>
     [DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
-    public struct IniKeyValuePair
+    public sealed class IniKeyValuePair : IEquatable<IniKeyValuePair>
     {
-        #region 用户属性
-        public bool HasData => !string.IsNullOrEmpty(this.Key);
+        #region Public Properties
 
-        public bool HasSummary => !string.IsNullOrWhiteSpace(this.Summary);
+        public bool HasData => !string.IsNullOrEmpty(Key);
+
+        public bool HasSummary => !string.IsNullOrWhiteSpace(Summary);
 
         public string Key { get; set; }
 
         public string Summary { get; set; }
 
         public IniValue Value { get; set; }
-        #endregion
 
-        #region 构造方法
-        public IniKeyValuePair(string key, IniValue value, string summary)
+        #endregion Public Properties
+
+        #region Public Constructors
+
+        public IniKeyValuePair()
         {
-            this.Key = key;
-            this.Value = value;
-            this.Summary = summary;
         }
-        #endregion
 
-        #region 转换
+        public IniKeyValuePair(string key) : this() => Key = key ?? throw new ArgumentNullException(nameof(key));
+
+        public IniKeyValuePair(string key, IniValue value) : this(key) => Value = value;
+
+        public IniKeyValuePair(string key, IniValue value, string summary) : this(key, value) => Summary = summary ?? throw new ArgumentNullException(nameof(summary));
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public static IniKeyValuePair CreateDataLine(string key, IniValue value) => new IniKeyValuePair(key, value, string.Empty);
+
+        public static IniKeyValuePair CreateEmptyLine() => new IniKeyValuePair(string.Empty, string.Empty, string.Empty);
+
+        public static IniKeyValuePair CreateFullLine(string key, IniValue value, string summary) => new IniKeyValuePair(key, value, summary);
+
+        public static IniKeyValuePair CreateSummaryLine(string summary) => new IniKeyValuePair(string.Empty, string.Empty, summary);
+
         public static implicit operator IniKeyValuePair(KeyValuePair<string, string> @this) => CreateDataLine(@this.Key, @this.Value);
+
         public static implicit operator IniKeyValuePair(KeyValuePair<string, IniValue> @this) => CreateDataLine(@this.Key, @this.Value);
+
         public static implicit operator IniKeyValuePair(ValueTuple<string, string> @this) => CreateDataLine(@this.Item1, @this.Item2);
+
         public static implicit operator IniKeyValuePair(ValueTuple<string, IniValue> @this) => CreateDataLine(@this.Item1, @this.Item2);
+
         public static implicit operator IniKeyValuePair(ValueTuple<string, string, string> @this) => CreateFullLine(@this.Item1, @this.Item2, @this.Item3);
+
         public static implicit operator IniKeyValuePair(ValueTuple<string, IniValue, string> @this) => CreateFullLine(@this.Item1, @this.Item2, @this.Item3);
 
-        public static implicit operator KeyValuePair<string, string>(IniKeyValuePair @this) => new KeyValuePair<string, string>(@this.Key, @this.Value);
         public static implicit operator KeyValuePair<string, IniValue>(IniKeyValuePair @this) => new KeyValuePair<string, IniValue>(@this.Key, @this.Value);
-        public static implicit operator ValueTuple<string, string>(IniKeyValuePair @this) => (@this.Key, @this.Value);
-        public static implicit operator ValueTuple<string, IniValue>(IniKeyValuePair @this) => (@this.Key, @this.Value);
-        #endregion
 
-        #region 用户方法
+        public static implicit operator KeyValuePair<string, string>(IniKeyValuePair @this) => new KeyValuePair<string, string>(@this.Key, @this.Value);
+
+        public static implicit operator ValueTuple<string, IniValue>(IniKeyValuePair @this) => (@this.Key, @this.Value);
+
+        public static implicit operator ValueTuple<string, string>(IniKeyValuePair @this) => (@this.Key, @this.Value);
+
+        public static bool operator !=(IniKeyValuePair left, IniKeyValuePair right) => !(left == right);
+
+        public static bool operator ==(IniKeyValuePair left, IniKeyValuePair right) => EqualityComparer<IniKeyValuePair>.Default.Equals(left, right);
+
         /// <summary>
         /// Get KeyValuePair From String
         /// </summary>
@@ -77,44 +103,41 @@ namespace Shimakaze.Struct.Ini
             }
             return result;
         }
-        public static IniKeyValuePair CreateEmptyLine() => new IniKeyValuePair(string.Empty, string.Empty, string.Empty);
-        public static IniKeyValuePair CreateSummaryLine(string summary) => new IniKeyValuePair(string.Empty, string.Empty, summary);
-        public static IniKeyValuePair CreateDataLine(string key, IniValue value) => new IniKeyValuePair(key, value, string.Empty);
-        public static IniKeyValuePair CreateFullLine(string key, IniValue value, string summary) => new IniKeyValuePair(key, value, summary);
+
+        public Task DepraseAsync(Stream stream) => DepraseAsync(new StreamWriter(stream));
+
         public async Task DepraseAsync(TextWriter writer)
         {
-            if (!string.IsNullOrWhiteSpace(this.Key) && !string.IsNullOrWhiteSpace(this.Value))
-                await writer.WriteAsync($"{this.Key}={this.Value}");
+            if (!string.IsNullOrWhiteSpace(Key) && !string.IsNullOrWhiteSpace(Value))
+                await writer.WriteAsync($"{Key}={Value}");
 
             if (HasSummary)
-                await writer.WriteAsync($";{this.Summary}");
+                await writer.WriteAsync($"; {Summary}");
         }
-        #endregion
 
-        #region Object重载
-        public override bool Equals(object obj)
-            => obj is IniKeyValuePair pair
-                && this.Key == pair.Key
-                && this.Value == pair.Value
-                && this.Summary == pair.Summary;
+        public override bool Equals(object obj) => (obj is IniKeyValuePair pair) && Equals(pair);
+
+        public bool Equals(IniKeyValuePair other) => other != null && Key == other.Key && Summary == other.Summary && EqualityComparer<IniValue>.Default.Equals(Value, other.Value);
 
         public override int GetHashCode()
         {
-            int hashCode = 1424931193;
-            hashCode = hashCode * -1521134295 + this.Key.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.Value.GetHashCode();
-            hashCode = (hashCode * -1521134295) + this.Summary.GetHashCode();
+            var hashCode = -1547869727;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Summary);
+            hashCode = hashCode * -1521134295 + Value.GetHashCode();
             return hashCode;
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
-            if (!string.IsNullOrWhiteSpace(this.Key) && !string.IsNullOrWhiteSpace(this.Value))
-                sb.Append($"{this.Key}={this.Value}");
-            if (this.HasSummary)
-                sb.Append($";{this.Summary}");
+            if (!string.IsNullOrWhiteSpace(Key) && !string.IsNullOrWhiteSpace(Value))
+                _ = sb.Append($"{Key}={Value}");
+            if (HasSummary)
+                sb.Append($"; {Summary}");
             return sb.ToString();
         }
-        #endregion
+
+        #endregion Public Methods
     }
 }

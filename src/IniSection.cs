@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,10 +11,11 @@ namespace Shimakaze.Struct.Ini
     /// <summary>
     /// Ini Section Structure
     /// </summary>
-    public struct IniSection
+    public sealed class IniSection : IList<IniKeyValuePair>
     {
-        #region 用户属性
-        public IniKeyValuePair[] Content { get; set; }
+        #region Public Properties
+
+        public List<IniKeyValuePair> Content { get; internal set; } = new List<IniKeyValuePair>();
 
         /// <summary>
         /// Section Head
@@ -25,88 +26,103 @@ namespace Shimakaze.Struct.Ini
         /// Summary in Section Head Line
         /// </summary>
         public string Summary { get; set; }
-        #endregion
 
-        #region 构造方法
-        public IniSection(string name, string summary, IniKeyValuePair[] content)
+        public int Count => Content.Count;
+
+        bool ICollection<IniKeyValuePair>.IsReadOnly => throw new NotImplementedException();
+
+        #endregion Public Properties
+
+        #region Public Constructors
+
+        public IniSection()
         {
-            this.Name = name;
-            this.Summary = summary;
-            this.Content = content;
         }
 
-        #endregion
+        public IniSection(string name) : this() => Name = name ?? throw new ArgumentNullException(nameof(name));
 
-        #region 访问器
-        public IniKeyValuePair this[string key] => this.Content.First(i => key.Equals(i.Key));
+        public IniSection(string name, IEnumerable<IniKeyValuePair> content) : this(name) => Content = new List<IniKeyValuePair>(content) ?? throw new ArgumentNullException(nameof(content));
 
-        #endregion
+        public IniSection(string name, IEnumerable<IniKeyValuePair> content, string summary) : this(name, content) => Summary = summary ?? throw new ArgumentNullException(nameof(summary));
 
-        #region 用户方法
+        [Obsolete]
+        public IniSection(string name, string summary, IEnumerable<IniKeyValuePair> content) : this(name, content, summary) { }
+
+        #endregion Public Constructors
+
+        #region Public Indexers
+
+        public IniKeyValuePair this[int index] { get => Content[index]; set => Content[index] = value; }
+        public IniKeyValuePair this[string key] => Content.First(i => key.Equals(i.Key));
+
+        #endregion Public Indexers
+
+        #region Public Methods
+
+        public void Add(IniKeyValuePair item) => ((ICollection<IniKeyValuePair>)Content).Add(item);
+
+        public void Clear() => ((ICollection<IniKeyValuePair>)Content).Clear();
+
+        public bool Contains(IniKeyValuePair item) => ((ICollection<IniKeyValuePair>)Content).Contains(item);
+
+        public void CopyTo(IniKeyValuePair[] array, int arrayIndex) => ((ICollection<IniKeyValuePair>)Content).CopyTo(array, arrayIndex);
+
         public async Task DepraseAsync(TextWriter writer)
         {
-            await writer.WriteAsync($"[{this.Name}]");
-            if (!string.IsNullOrEmpty(this.Summary))
-                await writer.WriteAsync($";{this.Summary}");
+            await writer.WriteAsync($"[{Name}]");
+            if (!string.IsNullOrEmpty(Summary))
+                await writer.WriteAsync($"; {Summary}");
             await writer.WriteLineAsync();
-            foreach (var item in this.Content)
+            foreach (var item in Content)
             {
                 await item.DepraseAsync(writer);
                 await writer.WriteLineAsync();
             }
         }
-        #endregion
 
-        #region Object重载
-        public override bool Equals(object obj) => obj is IniSection section &&
-                                   this.Name == section.Name &&
-                   this.Summary == section.Summary &&
-                   EqualityComparer<IniKeyValuePair[]>.Default.Equals(this.Content, section.Content);
+        public IEnumerator<IniKeyValuePair> GetEnumerator() => ((IEnumerable<IniKeyValuePair>)Content).GetEnumerator();
 
-        public override int GetHashCode()
-        {
-            int hashCode = 117231219;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Name);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Summary);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IniKeyValuePair[]>.Default.GetHashCode(this.Content);
-            return hashCode;
-        }
+        public int IndexOf(IniKeyValuePair item) => ((IList<IniKeyValuePair>)Content).IndexOf(item);
+
+        public void Insert(int index, IniKeyValuePair item) => ((IList<IniKeyValuePair>)Content).Insert(index, item);
+
+        public bool Remove(IniKeyValuePair item) => ((ICollection<IniKeyValuePair>)Content).Remove(item);
+
+        public void RemoveAt(int index) => ((IList<IniKeyValuePair>)Content).RemoveAt(index);
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            sb.Append($"[{this.Name}]");
-            if (!string.IsNullOrEmpty(this.Summary))
-                sb.Append($";{this.Summary}");
+            var sb = new StringBuilder($"[{Name}]");
+            if (!string.IsNullOrEmpty(Summary))
+                sb.Append($"; {Summary}");
             sb.AppendLine();
-            foreach (var item in this.Content)
+            foreach (var item in Content)
                 sb.AppendLine(item.ToString());
             return sb.ToString();
         }
-        #endregion
 
-        #region Try方法
-        public bool TryGetKey(string name, out IniKeyValuePair? keyValuePair)
+        [Obsolete]
+        public bool TryGetKey(string name, out IniKeyValuePair keyValuePair)
         {
             keyValuePair = null;
-            foreach (var item in this.Content)
+            if (TryGetKey(name) is IniKeyValuePair kvp)
             {
-                if (item.HasData && name.Equals(item.Key))
-                {
-                    keyValuePair = item;
-                    return true;
-                }
+                keyValuePair = kvp;
+                return true;
             }
             return false;
         }
 
-        public IniKeyValuePair? TryGetKey(string name)
+        public IniKeyValuePair TryGetKey(string name)
         {
-            foreach (var item in this.Content)
+            foreach (var item in Content)
                 if (item.HasData && name.Equals(item.Key))
                     return item;
             return null;
         }
-        #endregion
+
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Content).GetEnumerator();
+
+        #endregion Public Methods
     }
 }
