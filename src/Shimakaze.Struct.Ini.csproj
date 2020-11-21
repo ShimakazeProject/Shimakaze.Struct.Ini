@@ -13,8 +13,12 @@
     <RepositoryType>public</RepositoryType>
     <AssemblyVersion>1.0.1.314</AssemblyVersion>
     <FileVersion>1.0.1.4</FileVersion>
-    <Version>1.0.6-preview1</Version>
+    <Version>1.0.6-preview2</Version>
     <Description>用于解析INI</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Collections\" />
+  </ItemGroup>
 
 </Project>
